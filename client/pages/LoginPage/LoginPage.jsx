@@ -1,31 +1,55 @@
 import { useState } from "react";
 // import banner from "../../img/banner1.jpg";
 import "./LoginPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
+  // Validate
+  const validate = () => {
     if (!email || !password) {
       setError("Vui lòng nhập đầy đủ thông tin!");
-      return;
+      return false;
     }
-
-    let users = JSON.parse(localStorage.getItem("userArr")) || [];
-    const validUser = users.find(
-      (user) => user.email === email && user.password === password
-    );
-
-    if (!validUser) {
-      setError("Sai email hoặc mật khẩu!");
-      return;
+    if (password.length < 8) {
+      setError("Mật khẩu phải có ít nhất 8 ký tự!");
+      return false;
     }
-
-    localStorage.setItem("currentUser", JSON.stringify(validUser));
-    alert("Đăng nhập thành công!");
-    window.location.href = "/ShopIphoneByReactJs";
+    setError("");
+    return true;
+  };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+    const userData = {
+      email,
+      password,
+    };
+    try {
+      const response = await fetch("http://localhost:5000/api/client/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      const data = await response.json();
+      if (data.error) {
+        setError(data.error);
+      } else {
+        alert("Đăng nhập thành công!");
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        navigate("/");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Đã xảy ra lỗi, vui lòng thử lại sau.");
+    }
   };
 
   return (

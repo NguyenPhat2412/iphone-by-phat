@@ -5,9 +5,7 @@ const ProductList = ({ category, search }) => {
   const [products, setProducts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const API_URL =
-    "https://firebasestorage.googleapis.com/v0/b/funix-subtitle.appspot.com/o/Boutique_products.json?alt=media&token=dc67a5ea-e3e0-479e-9eaf-5e01bcd09c74";
-
+  const API_URL = "http://localhost:5000/api/client/product/products";
   useEffect(() => {
     fetch(API_URL)
       .then((res) => res.json())
@@ -18,7 +16,7 @@ const ProductList = ({ category, search }) => {
       .catch((err) => console.error("Lỗi tải dữ liệu:", err));
   }, []);
 
-  // ✅ Lọc sản phẩm theo danh mục & từ khóa tìm kiếm
+  // Lọc sản phẩm theo danh mục & từ khóa tìm kiếm
   const filteredProducts = products.filter((product) => {
     const matchesCategory = category ? product.category === category : true;
     const matchesSearch = search

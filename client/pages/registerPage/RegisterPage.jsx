@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./RegisterPage.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
   const [fullName, setFullName] = useState("");
@@ -8,6 +8,8 @@ const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSignUp = () => {
     if (!email || !password || !fullName || !phone) {
@@ -19,17 +21,34 @@ const SignUpPage = () => {
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem("userArr")) || [];
-    const existingUser = users.find((user) => user.email === email);
-    if (existingUser) {
-      setError("Email này đã được đăng ký!");
-      return;
-    }
+    const userData = {
+      fullName,
+      phone,
+      email,
+      password,
+    };
 
-    users.push({ email, password, fullName, phone });
-    localStorage.setItem("userArr", JSON.stringify(users));
-    alert("Đăng ký thành công! Chuyển hướng đến trang đăng nhập...");
-    window.location.href = "/ShopIphoneByReactJs/login";
+    // Post user data to the server
+    fetch("http://localhost:5000/api/client/user/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setError(data.error);
+        } else {
+          alert("Đăng ký thành công!");
+          navigate("/login");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setError("Đã xảy ra lỗi, vui lòng thử lại sau.");
+      });
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // ✅ Import Link
+import { Link } from "react-router-dom";
 
 const NavBarHome = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -21,7 +21,7 @@ const NavBarHome = () => {
   return (
     <>
       <nav className="navbar navbar-item items-center px-4 py-6 bg-white">
-        <divhhb
+        <div
           className="flex justify-between"
           style={{ margin: "0 auto", maxWidth: "1080px" }}
         >
@@ -54,7 +54,7 @@ const NavBarHome = () => {
               </div>
             )}
           </div>
-        </divhhb>
+        </div>
       </nav>
     </>
   );

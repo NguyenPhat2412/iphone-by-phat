@@ -13,9 +13,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Schema User
-const client = require("./routes/User");
+const clientUser = require("./routes/User");
+const clientProduct = require("./routes/Product");
 
-app.use("/api/client", client);
+app.use("/api/client/user", clientUser);
+app.use("/api/client/product", clientProduct);
 
 // Connect to MongoDB
 app.use((req, res, next) => {

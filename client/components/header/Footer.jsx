@@ -4,14 +4,14 @@ const Footer = () => {
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
-    fetch("/ShopIphoneByReactJs/footer.json") // Đường dẫn đến file JSON
+    fetch("http://localhost:5000/api/client/footer") // Đường dẫn đến file JSON
       .then((res) => res.json())
       .then((data) => setColumns(data))
       .catch((err) => console.error(err.message));
   }, []);
 
   return (
-    <footer className="bg-gray-900 text-white py-8 justify-center items-center ">
+    <footer className="bg-gray-900 text-white py-8 justify-center items-center flex mt-4">
       <div
         className="container pl-4 "
         style={{ margin: "0 auto", maxWidth: "1080px" }}
