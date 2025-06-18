@@ -16,21 +16,19 @@ const DetailPage = () => {
     // Thêm logic cập nhật giỏ hàng tại đây
   };
 
-  const API_URL =
-    "https://firebasestorage.googleapis.com/v0/b/funix-subtitle.appspot.com/o/Boutique_products.json?alt=media&token=dc67a5ea-e3e0-479e-9eaf-5e01bcd09c74";
+  const API_URL = "http://localhost:5000/api/client/product/products";
 
   useEffect(() => {
     fetch(API_URL)
       .then((res) => res.json())
       .then((data) => {
-        const foundProduct = data.find((item) => item._id.$oid === id);
+        const foundProduct = data.find((item) => item._id === id);
         console.log("foundProduct", foundProduct);
         setProduct(foundProduct);
 
         // Lọc ra sản phẩm liên quan
         const related = data.filter(
-          (item) =>
-            item.category === foundProduct?.category && item._id.$oid !== id
+          (item) => item.category === foundProduct?.category && item._id !== id
         );
         setRelatedProducts(related);
       })

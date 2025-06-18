@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_CART, DELETE_CART } from "./CartSlice";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 // import { useEffect } from "react";
 
@@ -23,6 +24,47 @@ const CartPage = () => {
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
+  // Kiểm tra cookie để xác định người dùng đăng nhập hay chưa su dung cookie
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/api/client/user/check-auth",
+          { credentials: "include" } // đảm bảo cookie được gửi đi
+        );
+        const data = await res.json();
+        if (!data.loggedIn) {
+          console.log("User not authenticated, redirecting to login");
+          navigate("/login");
+        }
+      } catch (error) {
+        console.error("Error checking authentication:", error);
+        navigate("/login");
+      }
+    };
+    checkAuth();
+  }, []);
+
+  // Đăng nhập để được thanh toán
+  const handleProceed = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/client/user/check-auth",
+        { credentials: "include" } // đảm bảo cookie được gửi đi
+      );
+      const data = await res.json();
+      if (!data.loggedIn) {
+        console.log("User not authenticated, redirecting to login");
+        navigate("/login");
+      } else {
+        navigate("/checkout");
+      }
+    } catch (error) {
+      console.error("Error checking authentication:", error);
+      navigate("/login");
+    }
+  };
 
   return (
     <div
@@ -65,10 +107,7 @@ const CartPage = () => {
                         type="number"
                         value={item.quantity}
                         onChange={(e) =>
-                          handleQuantityChange(
-                            item._id.$oid,
-                            Number(e.target.value)
-                          )
+                          handleQuantityChange(item._id, Number(e.target.value))
                         }
                         className="w-16 text-center rounded"
                       />
@@ -76,7 +115,7 @@ const CartPage = () => {
                     <td className=" p-2">${item.price * item.quantity}</td>
                     <td className=" p-2">
                       <button
-                        onClick={() => handleDelete(item._id.$oid)}
+                        onClick={() => handleDelete(item._id)}
                         // className="text-red-500"s
                       >
                         <i className="fa-solid fa-trash"></i>
@@ -91,10 +130,7 @@ const CartPage = () => {
               <button onClick={() => navigate("/shop")} className="px-4 py-2">
                 Continue Shopping
               </button>
-              <button
-                onClick={() => navigate("/checkout")}
-                className="border  px-4 py-2"
-              >
+              <button onClick={handleProceed} className="border  px-4 py-2">
                 Proceed to Checkout
               </button>
             </div>

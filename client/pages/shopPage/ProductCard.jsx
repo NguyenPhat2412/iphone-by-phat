@@ -7,8 +7,8 @@ const ProductCard = ({ product }) => {
     <div
       className=" p-4 rounded-lg shadow-md hover:shadow-xl transition duration-300 cursor-pointer"
       onClick={() => {
-        navigate(`/detail/${product._id.$oid}`);
-        console.log(`Product ${product._id.$oid} clicked!`);
+        navigate(`/detail/${product._id}`);
+        console.log(`Product ${product._id} clicked!`);
       }}
     >
       <img

@@ -4,6 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 const CheckOutPage = () => {
   const cart = useSelector((state) => state.cart.listCart);
+  const cleanedCart = cart.map((item) => ({
+    productId: item._id?.$oid || item._id, //  chuyển về string
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+    img: item.img1 || item.img, // tuỳ thuộc vào cấu trúc của bạn
+  }));
   const navigate = useNavigate();
 
   // Tính tổng tiền đơn hàng
@@ -39,13 +46,35 @@ const CheckOutPage = () => {
 
     const orderData = {
       customer: customerInfo,
-      cart,
-      total: totalPrice,
+      cart: cleanedCart,
+      totalPrice: totalPrice,
     };
-    console.log("Đơn hàng đã gửi:", orderData);
 
-    alert("Đặt hàng thành công!");
-    localStorage.removeItem("cart");
+    // Gửi yêu cầu đặt hàng đến server
+    fetch("http://localhost:5000/api/client/order/orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(orderData),
+      credentials: "include", // Đảm bảo cookie được gửi đi
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert("Đặt hàng thành công!");
+          console.log("Order placed successfully:", data);
+          // Xóa giỏ hàng sau khi đặt hàng thành công
+          localStorage.removeItem("cart");
+        }
+      })
+      .catch((err) => {
+        console.error("Error placing order:", err);
+        alert("Đã xảy ra lỗi khi đặt hàng, vui lòng thử lại sau.");
+      });
+    // Chuyển hướng về trang chủ sau khi đặt hàng
     navigate("/");
   };
 

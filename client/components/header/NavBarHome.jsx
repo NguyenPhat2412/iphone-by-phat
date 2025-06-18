@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const NavBarHome = () => {
   const [currentUser, setCurrentUser] = useState(null);
@@ -11,11 +12,21 @@ const NavBarHome = () => {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("currentUser");
-    setCurrentUser(null);
-    alert("Đăng xuất thành công!");
-    window.location.href = "/ShopIphoneByReactJs";
+  const handleLogout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/client/user/logout", {
+        method: "POST",
+        credentials: "include", // Đảm bảo cookie được gửi đi
+      });
+      localStorage.removeItem("currentUser");
+      localStorage.removeItem("token");
+      Cookies.remove("token", { path: "/" }); // Xóa cookie token
+      Cookies.remove("token");
+      alert("Đăng xuất thành công!");
+      window.location.href = "/";
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
 
   return (
@@ -44,7 +55,7 @@ const NavBarHome = () => {
               </Link>
             ) : (
               <div className="flex gap-1">
-                <i className="fa-solid fa-user"></i> {currentUser.fullName}
+                <i className="fa-solid fa-user"></i> {currentUser.name}
                 <button
                   onClick={handleLogout}
                   style={{ marginLeft: "10px", marginBottom: "12px" }}

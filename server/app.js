@@ -1,23 +1,34 @@
+require("dotenv").config();
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
+const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true, // This allows cookies to be sent with requests
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  })
+);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Schema User
 const clientUser = require("./routes/User");
 const clientProduct = require("./routes/Product");
+const clientOrder = require("./routes/Order");
 
 app.use("/api/client/user", clientUser);
 app.use("/api/client/product", clientProduct);
+app.use("/api/client/order", clientOrder);
 
 // Connect to MongoDB
 app.use((req, res, next) => {

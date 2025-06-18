@@ -53,7 +53,7 @@ const SignUpPage = () => {
 
   return (
     <div className="container-register">
-      <div className="flex items-center justify-center min-h-155">
+      <div className="flex items-center justify-center min-h-165">
         <div className="w-120 p-10 bg-white rounded-lg ">
           <h1 className="text-2xl font-bold text-center py-12 mb-4">Sign Up</h1>
           <input

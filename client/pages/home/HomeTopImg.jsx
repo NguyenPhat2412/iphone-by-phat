@@ -6,8 +6,7 @@ import { SHOW_POPUP } from "./Redux/popupSlice";
 
 // fetch data
 const HomeTopImg = () => {
-  const FIREBASE_URL =
-    "https://firebasestorage.googleapis.com/v0/b/funix-subtitle.appspot.com/o/Boutique_products.json?alt=media&token=dc67a5ea-e3e0-479e-9eaf-5e01bcd09c74";
+  const FIREBASE_URL = "http://localhost:5000/api/client/product/products"; // Đường dẫn đến API của bạn
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {

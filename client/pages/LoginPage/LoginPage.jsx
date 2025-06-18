@@ -29,13 +29,17 @@ const LoginPage = () => {
       password,
     };
     try {
-      const response = await fetch("http://localhost:5000/api/client/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+      const response = await fetch(
+        "http://localhost:5000/api/client/user/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+          credentials: "include", // Đảm bảo cookie được gửi đi
+        }
+      );
       const data = await response.json();
       if (data.error) {
         setError(data.error);
@@ -54,7 +58,7 @@ const LoginPage = () => {
 
   return (
     <div className="container-login">
-      <div className="flex items-center justify-center min-h-155">
+      <div className="flex items-center justify-center min-h-165">
         <div className="w-120 px-10 bg-white rounded-lg shadow-md">
           <h1 className="text-2xl font-bold text-center py-20">Sign In</h1>
           <input
