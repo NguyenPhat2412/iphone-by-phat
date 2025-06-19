@@ -4,6 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 const CheckOutPage = () => {
   const cart = useSelector((state) => state.cart.listCart);
+
+  // get id user from localStorage
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const userId = currentUser ? currentUser.id : null;
+  console.log("User ID:", userId);
+
   const cleanedCart = cart.map((item) => ({
     productId: item._id?.$oid || item._id, //  chuyển về string
     name: item.name,
@@ -45,6 +51,7 @@ const CheckOutPage = () => {
     }
 
     const orderData = {
+      userId: userId,
       customer: customerInfo,
       cart: cleanedCart,
       totalPrice: totalPrice,

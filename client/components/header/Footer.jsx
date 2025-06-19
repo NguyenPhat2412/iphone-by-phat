@@ -16,7 +16,7 @@ const Footer = () => {
   return (
     <footer
       className="bg-gray-900 text-white py-8 justify-center items-center flex"
-      style={{ marginTop: "10px" }}
+      style={{ bottom: 0, width: "100%", height: "100%" }}
     >
       <div
         className="container pl-4 "

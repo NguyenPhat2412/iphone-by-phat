@@ -74,7 +74,7 @@ exports.getUser = async (req, res) => {
   console.log("Generated JWT token:", token);
 
   // Post Cookie
-  res.cookie("tokenbe", token, {
+  res.cookie("token", token, {
     httpOnly: true,
     secure: false,
     sameSite: "Lax",
@@ -135,7 +135,7 @@ exports.getAllProducts = async (req, res) => {
 // Order a product
 exports.postOrder = async (req, res) => {
   try {
-    const { customer, cart, totalPrice } = req.body;
+    const { userId, customer, cart, totalPrice } = req.body;
 
     // Validate input
     if (!customer || !cart || !totalPrice) {
@@ -143,6 +143,7 @@ exports.postOrder = async (req, res) => {
     }
     // Create a new order
     const newOrder = new Order({
+      userId: userId,
       customer,
       cart,
       totalPrice,
@@ -172,7 +173,7 @@ exports.postOrder = async (req, res) => {
 // Logout user
 exports.logoutUser = (req, res) => {
   // Clear the cookie
-  res.clearCookie("tokenbe", token, {
+  res.clearCookie("token", {
     httpOnly: true,
     secure: false,
     sameSite: "Lax",
@@ -181,6 +182,47 @@ exports.logoutUser = (req, res) => {
   res.status(200).json({ message: "User logged out successfully" });
 };
 
+// get order by user
+exports.getOrderByUserId = async (req, res) => {
+  const userId = req.params.userId;
+
+  // Validate userId
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  try {
+    const orders = await Order.find({ userId: userId });
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ error: "No orders found for this user" });
+    }
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Get view order by OrderId
+exports.getOrderById = async (req, res) => {
+  // Get ID order
+  const _id = req.params.orderId;
+  // Validate orderId
+  if (!_id) {
+    return res.status(400).json({ error: "Order ID is required" });
+  }
+
+  try {
+    const order = await Order.findById(_id);
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    res.status(200).json(order);
+  } catch (err) {
+    console.error("Error fetching order:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 // Get all data footer
 exports.getAllFooter = async (req, res) => {
   Footer.find()

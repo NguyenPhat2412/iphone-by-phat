@@ -3,8 +3,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   customer: {
-    fullName: {
+    name: {
       type: String,
     },
     email: {
@@ -19,6 +24,9 @@ const OrderSchema = new Schema({
   },
   cart: [
     {
+      name: {
+        type: String,
+      },
       productId: {
         type: Schema.Types.ObjectId,
         ref: "Product",
