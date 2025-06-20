@@ -123,6 +123,20 @@ exports.getUser = async (req, res) => {
   });
 };
 
+// get all User
+exports.getAllUser = async (req, res) => {
+  try {
+    const users = await User.find();
+    if (!users || users.length === 0) {
+      return res.status(404).json({ error: "No users found" });
+    }
+    res.status(200).json(users);
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 // Get products
 exports.getAllProducts = async (req, res) => {
   const products = await Product.find();

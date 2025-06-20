@@ -2,8 +2,8 @@ const path = require("path");
 const express = require("express");
 const router = express.Router();
 
-const clientController = require("../controllers/Client");
-const authController = require("../controllers/authController");
+const clientController = require("../../controllers/Client");
+const authController = require("../../controllers/authController");
 // register user
 router.post("/register", clientController.postUser);
 

@@ -1,0 +1,17 @@
+form input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  width: 200px;
+  border: 1px solid #ccc;
+}
+
+form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  width: 200px;
+  border: 1px solid #ccc;
+}
