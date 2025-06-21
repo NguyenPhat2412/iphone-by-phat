@@ -16,7 +16,7 @@ const DetailPage = () => {
     // Thêm logic cập nhật giỏ hàng tại đây
   };
 
-  const API_URL = "http://localhost:5000/api/client/product/products";
+  const API_URL = `${import.meta.env.VITE_API_URL}/api/client/product/products`;
 
   useEffect(() => {
     fetch(API_URL)

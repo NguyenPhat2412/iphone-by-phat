@@ -4,7 +4,7 @@ const Footer = () => {
   const [columns, setColumns] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/client/user/footer", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/client/user/footer`, {
       method: "GET",
       credentials: "include",
     }) // Đường dẫn đến file JSON

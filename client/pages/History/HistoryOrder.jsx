@@ -13,7 +13,7 @@ const HistoryOrder = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/client/order/${userId}`,
+          `${import.meta.env.VITE_API_URL}/api/client/order/${userId}`,
           {
             credentials: "include", // Ensure cookies are sent
           }

@@ -29,7 +29,7 @@ const SignUpPage = () => {
     };
 
     // Post user data to the server
-    fetch("http://localhost:5000/api/client/user/register", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/client/user/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

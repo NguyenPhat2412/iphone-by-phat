@@ -5,9 +5,12 @@ const ProductList = ({ category, search }) => {
   const [products, setProducts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const API_URL = "http://localhost:5000/api/client/product/products";
+  const API_URL = `${import.meta.env.VITE_API_URL}/api/client/product/products`;
   useEffect(() => {
-    fetch(API_URL)
+    fetch(API_URL, {
+      method: "GET",
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => {
         setProducts(data);

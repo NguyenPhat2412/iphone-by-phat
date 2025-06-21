@@ -6,11 +6,16 @@ import { SHOW_POPUP } from "./Redux/popupSlice";
 
 // fetch data
 const HomeTopImg = () => {
-  const FIREBASE_URL = "http://localhost:5000/api/client/product/products"; // Đường dẫn đến API của bạn
+  const DATABASE_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/client/product/products`;
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
   useEffect(() => {
-    fetch(FIREBASE_URL)
+    fetch(DATABASE_URL, {
+      method: "GET",
+      credentials: "include",
+    })
       .then((res) => res.json())
       // Giới hạn danh sách sản phẩm tối đa 8 sản phẩm
       .then((data) => setProducts(data.slice(0, 8)))

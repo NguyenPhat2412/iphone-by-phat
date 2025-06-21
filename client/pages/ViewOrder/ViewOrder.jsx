@@ -11,7 +11,9 @@ const ViewOrder = () => {
     const fetchOrderDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/client/order/view-orders/${orderId}`,
+          `${
+            import.meta.env.VITE_API_URL
+          }/api/client/order/view-orders/${orderId}`,
           {
             credentials: "include",
           }

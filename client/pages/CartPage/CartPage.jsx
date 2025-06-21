@@ -30,7 +30,7 @@ const CartPage = () => {
     const checkAuth = async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/api/client/user/check-auth",
+          `${import.meta.env.VITE_API_URL}/api/client/user/check-auth`,
           { credentials: "include" } // đảm bảo cookie được gửi đi
         );
         const data = await res.json();

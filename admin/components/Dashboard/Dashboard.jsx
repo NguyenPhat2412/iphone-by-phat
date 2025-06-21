@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import NavBar from "../NavBar/navbar";
 import "./Dashboard.css";
+import { Link } from "react-router-dom";
 
 const DashBoard = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchProduct, setSearchProduct] = useState("");
-
   const ProductPerPage = 8;
 
-  // Lấy thông tin người dùng
+  // Get info of Product
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/product/products", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/admin/product/products`, {
       method: "GET",
       credentials: "include",
     })
@@ -34,7 +34,7 @@ const DashBoard = () => {
       setProducts(filteredProducts);
     } else {
       // Nếu không có từ khóa tìm kiếm, lấy lại danh sách sản phẩm gốc
-      fetch("http://localhost:5000/api/admin/product/products", {
+      fetch(`${import.meta.env.VITE_API_URL}/api/admin/product/products`, {
         method: "GET",
         credentials: "include",
       })
@@ -46,6 +46,28 @@ const DashBoard = () => {
         .catch((err) => console.error("Lỗi lấy user:", err));
     }
   }, [searchProduct, products]);
+
+  // Delete product
+  const handleDelete = async (id) => {
+    try {
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_URL
+        }/api/admin/product/delete-product/${id}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to delete product");
+      }
+      alert("Product deleted successfully");
+      navigator("/");
+    } catch (err) {
+      console.error("Error when delete product", err);
+    }
+  };
 
   // Phân trang
   const indexOfLastProduct = currentPage * ProductPerPage;
@@ -82,7 +104,12 @@ const DashBoard = () => {
               value={searchProduct}
               onChange={(e) => setSearchProduct(e.target.value)}
               className="border border-gray-300 rounded px-3 py-2 w-1/3"
-              style={{ width: "30%", height: "40px", marginBottom: "10px" }}
+              style={{
+                width: "30%",
+                height: "40px",
+                marginBottom: "10px",
+                paddingLeft: "10px",
+              }}
             ></input>
           </div>
           {loading ? (
@@ -113,7 +140,9 @@ const DashBoard = () => {
                       <td className="py-2 px-3 border">
                         {
                           <img
-                            src={b.img1}
+                            src={
+                              b.img1 || `http://localhost:5000/${b.image[0]}`
+                            }
                             alt={b.name}
                             className="w-10 h-10 object-cover"
                           />
@@ -123,18 +152,28 @@ const DashBoard = () => {
                         {b.category || "N/A"}
                       </td>
                       <td className="py-2 px-3 border ">
-                        <button
+                        <Link
                           className="bg-blue-500 text-white rounded"
                           style={{
                             padding: "0.5rem 1rem",
                             marginRight: "0.5rem",
                           }}
+                          to={`/edit-product/${b._id}`}
                         >
                           Update
-                        </button>
+                        </Link>
                         <button
                           className="bg-red-500 text-white rounded ml-2"
                           style={{ padding: "0.5rem 1rem" }}
+                          onClick={() => {
+                            if (
+                              window.confirm(
+                                "Are you sure you want to delete this product?"
+                              )
+                            ) {
+                              handleDelete(b._id);
+                            }
+                          }}
                         >
                           Delete
                         </button>
@@ -155,19 +194,20 @@ const DashBoard = () => {
                 >
                   <i className="fa-solid fa-square-caret-left w-10 "></i>
                 </button>
-                {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+                {Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+                  const pageNumber = startPage + i;
                   <button
-                    key={i + 1}
-                    onClick={() => paginate(i + 1)}
+                    key={pageNumber}
+                    onClick={() => paginate(pageNumber)}
                     className={`px-3 py-1 rounded border w-10 ${
-                      currentPage === i + 1
+                      currentPage === pageNumber
                         ? "bg-blue-500 text-white"
                         : "bg-white text-blue-500"
                     }`}
                   >
-                    {i + 1}
-                  </button>
-                ))}
+                    {pageNumber}
+                  </button>;
+                })}
                 <button
                   onClick={() =>
                     paginate(Math.min(currentPage + 1, totalPages))

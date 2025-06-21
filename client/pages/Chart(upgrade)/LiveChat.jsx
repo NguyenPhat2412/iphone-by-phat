@@ -1,24 +1,77 @@
+import { useEffect } from "react";
 import { useState } from "react";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:5000"); // Adjust the URL as needed
 
 const LiveChat = ({ isOpen }) => {
+  // Local storage key for rooms
+  const [roomId, setRoomId] = useState(localStorage.getItem("rooms") || "");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
-  const sendMessage = () => {
-    if (!input.trim()) return;
-    setMessages([...messages, { text: input, sender: "user" }]);
-    setInput("");
+  // const sendMessage = () => {
+  //   if (!input.trim()) return;
+  //   setMessages([...messages, { text: input, sender: "user" }]);
+  //   setInput("");
 
-    // Gia lap phan hoi tu bot
-    setTimeout(() => {
-      setMessages(
-        (prevMessages) => [
-          ...prevMessages,
-          { text: "Bot: " + input, sender: "bot" },
-        ],
-        1000
-      );
+  //   // Gia lap phan hoi tu bot
+  //   setTimeout(() => {
+  //     setMessages(
+  //       (prevMessages) => [
+  //         ...prevMessages,
+  //         { text: "Bot: " + input, sender: "bot" },
+  //       ],
+  //       1000
+  //     );
+  //   });
+  // };
+
+  useEffect(() => {
+    console.log("Connect to socket: ", socket.connected);
+    const handleRoomCreated = ({ roomId }) => {
+      localStorage.setItem("rooms", roomId);
+      setRoomId(roomId);
+    };
+
+    const handleNewMessage = (msg) => {
+      console.log("New message received:", msg);
+      setMessages((prev) => [...prev, msg]);
+    };
+
+    const handleChatEnded = () => {
+      alert("Chat has ended. You can start a new chat.");
+      setMessages([]);
+      localStorage.removeItem("rooms");
+      setRoomId(null);
+    };
+
+    socket.on("room_created", handleRoomCreated);
+    socket.on("new_message", handleNewMessage);
+    socket.on("chat_ended", handleChatEnded);
+
+    return () => {
+      socket.off("room_created", handleRoomCreated);
+      socket.off("new_message", handleNewMessage);
+      socket.off("chat_ended", handleChatEnded);
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (input.trim() === "") return;
+    if (!socket.connected) {
+      console.error("Socket not connected yet");
+      return;
+    }
+
+    socket.emit("client_message", {
+      roomId: roomId,
+      message: input,
     });
+    console.log("Message sent:", input);
+
+    // Clear input field after sending
+    setInput("");
   };
 
   return (
@@ -42,13 +95,21 @@ const LiveChat = ({ isOpen }) => {
           {messages.map((msg, index) => (
             <div
               key={index}
-              className={`p-2 my-1 rounded-lg text-sm${
-                msg.sender === "user"
+              className={`p-2 my-1 rounded-lg text-sm ${
+                msg.sender === "client"
                   ? "bg-blue-100 text-right"
+                  : msg.sender === "bot"
+                  ? "bg-gray-200 text-left italic"
+                  : msg.sender === "admin"
+                  ? "bg-yellow-100 text-left"
                   : "bg-gray-200 text-left"
-              }`}
+              }, `}
             >
-              {msg.text}
+              {msg.sender === "client"
+                ? `You: ${msg.message}`
+                : msg.sender === "bot"
+                ? `${msg.message}`
+                : `Admin: ${msg.message}`}
             </div>
           ))}
         </div>

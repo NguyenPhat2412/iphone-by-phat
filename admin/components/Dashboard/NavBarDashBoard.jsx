@@ -9,7 +9,7 @@ const DashboardNavbar = ({ userId }) => {
 
   // Lấy tất cả user
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/user/users")
+    fetch(`${import.meta.env.VITE_API_URL}/api/admin/user/users`)
       .then((res) => res.json())
       .then((data) => setNumberUser(data.length))
       .catch((err) => console.error("Lỗi lấy user:", err));
@@ -19,7 +19,7 @@ const DashboardNavbar = ({ userId }) => {
   useEffect(() => {
     if (!userId) return;
 
-    fetch(`http://localhost:5000/api/client/order/:userId`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/client/order/:userId`)
       .then((res) => res.json())
       .then((data) => {
         setNumberOrders(data.length);

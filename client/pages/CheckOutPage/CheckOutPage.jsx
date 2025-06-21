@@ -58,7 +58,7 @@ const CheckOutPage = () => {
     };
 
     // Gửi yêu cầu đặt hàng đến server
-    fetch("http://localhost:5000/api/client/order/orders", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/client/order/orders`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

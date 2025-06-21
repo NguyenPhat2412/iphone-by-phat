@@ -17,7 +17,7 @@ const Users = () => {
 
   // Lấy thông tin người dùng
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/user/users", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/admin/user/users`, {
       method: "GET",
       credentials: "include",
     })

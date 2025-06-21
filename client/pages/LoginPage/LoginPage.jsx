@@ -30,7 +30,7 @@ const LoginPage = () => {
     };
     try {
       const response = await fetch(
-        "http://localhost:5000/api/client/user/login",
+        `${import.meta.env.VITE_API_URL}/api/client/user/login`,
         {
           method: "POST",
           headers: {

@@ -23,6 +23,13 @@ const NavBar = () => {
             <i className="fa-regular fa-user"></i>
             <p>Users</p>
           </Link>
+          <Link
+            to="/admin-panel"
+            className="main-list block py-2 px-3 rounded flex "
+          >
+            <i className="fa-brands fa-rocketchat"></i>
+            <p>Admin Chat</p>
+          </Link>
         </div>
 
         <div className="dashboard-list">

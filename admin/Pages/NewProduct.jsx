@@ -1,36 +1,32 @@
 import { useState } from "react";
 import NavBar from "../components/NavBar/navbar";
 import "./NewProduct.css";
+import { useNavigate } from "react-router-dom";
 
 const NewProduct = () => {
-  const [productName, setProductName] = useState("");
+  const [name, setProductName] = useState("");
   const [category, setCategory] = useState("");
-  const [shortDesc, setShortDesc] = useState("");
-  const [longDesc, setLongDesc] = useState("");
+  const [short_desc, setShortDesc] = useState("");
+  const [long_desc, setLongDesc] = useState("");
+  const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState(null);
   const [errors, setErrors] = useState({});
-
+  const navigate = useNavigate();
   const handleFileChange = (e) => {
-    setImage(e.target.files[0]);
+    setImage(Array.from(e.target.files));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (
-      !productName ||
-      !category ||
-      !shortDesc ||
-      !longDesc ||
-      !image ||
-      !errors
-    ) {
+    if (!name || !category || !short_desc || !long_desc || !image || !errors) {
       setErrors({
-        productName: !productName ? "Product name is required" : "",
+        name: !name ? "Product name is required" : "",
         category: !category ? "Category is required" : "",
-        shortDesc: !shortDesc ? "Short description is required" : "",
-        longDesc: !longDesc ? "Long description is required" : "",
-        image: !image ? "Image is required" : "",
+        shortDesc: !short_desc ? "Short description is required" : "",
+        longDesc: !long_desc ? "Long description is required" : "",
+        price: !price ? "Price is required" : "",
+        images: !image ? "Image is required" : "",
         errors: "Please fill in all fields",
       });
       return;
@@ -39,10 +35,12 @@ const NewProduct = () => {
 
     try {
       const formData = new FormData();
-      formData.append("image", image);
+      for (let i = 0; i < image.length; i++) {
+        formData.append("images", image[i]);
+      }
 
       const uploadResponse = await fetch(
-        "http://localhost:5000/api/admin/upload/upload",
+        `${import.meta.env.VITE_API_URL}/api/admin/upload/upload-multiple`,
         {
           method: "POST",
           credentials: "include",
@@ -53,7 +51,8 @@ const NewProduct = () => {
       if (!uploadResponse.ok) {
         throw new Error(uploadData.error || "Failed to upload image");
       }
-      const imageUrl = uploadData.filePath;
+      const imageUrl = uploadData.filePaths;
+      console.log("Image uploaded successfully:", imageUrl);
       const response = await fetch(
         "http://localhost:5000/api/admin/product/new-products",
         {
@@ -62,15 +61,18 @@ const NewProduct = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            productName,
+            name: name,
             category,
-            shortDesc,
-            longDesc,
-            image: imageUrl,
+            short_desc,
+            long_desc,
+            price,
+            images: imageUrl,
           }),
+          credentials: "include",
         }
       );
       const data = await response.json();
+      console.log("Response data:", data);
       if (!response.ok) {
         throw new Error(data.error || "Failed to create product");
       }
@@ -79,7 +81,9 @@ const NewProduct = () => {
       setCategory("");
       setShortDesc("");
       setLongDesc("");
+      setPrice("");
       setImage(null);
+      navigate("/");
     } catch (error) {
       console.error("Error creating product:", error);
       alert("Error creating product: " + error.message);
@@ -98,7 +102,7 @@ const NewProduct = () => {
       >
         <div
           className="transactions bg-white shadow-md rounded-lg p-7 shadow-md mt-6"
-          style={{ width: "100%", height: "65vh" }}
+          style={{ width: "100%", height: "75vh" }}
         >
           <h2 className="text-2xl font-bold text-left mt-4 mb-6">
             Add New Product
@@ -107,7 +111,7 @@ const NewProduct = () => {
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <input
               type="text"
-              value={productName}
+              value={name}
               onChange={(e) => setProductName(e.target.value)}
               placeholder="Enter Product Name"
             ></input>
@@ -117,15 +121,21 @@ const NewProduct = () => {
               onChange={(e) => setCategory(e.target.value)}
               placeholder="Enter Category"
             ></input>
+            <input
+              type="number"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              placeholder="Enter Price"
+            ></input>
             <textarea
               type="text"
-              value={shortDesc}
+              value={short_desc}
               onChange={(e) => setShortDesc(e.target.value)}
               placeholder="Enter Short Description"
             ></textarea>
             <textarea
               type="text"
-              value={longDesc}
+              value={long_desc}
               onChange={(e) => setLongDesc(e.target.value)}
               placeholder="Enter Long Description"
             ></textarea>
@@ -133,9 +143,9 @@ const NewProduct = () => {
               <p>Upload image (5 images)</p>
               <input
                 type="file"
-                accept="image/*"
                 onChange={handleFileChange}
                 className="border border-gray-300 p-2 rounded"
+                multiple
               />
             </div>
             <button
