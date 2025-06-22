@@ -4,85 +4,77 @@ import "./Dashboard.css";
 import { Link } from "react-router-dom";
 
 const DashBoard = () => {
-  const [products, setProducts] = useState([]);
+  const [numberClient, setNumberClient] = useState(0);
+  const [numberOrder, setNumberOrder] = useState(0);
+  const [numberEarning, setNumberEarning] = useState(0);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchProduct, setSearchProduct] = useState("");
   const ProductPerPage = 8;
 
-  // Get info of Product
+  const API_URL = import.meta.env.VITE_API_URL;
+
+  // Lấy thông tin tổng quan
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/admin/product/products`, {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setProducts(data);
+    const fetchDashboardData = async () => {
+      try {
+        const [clientRes, orderRes, earningRes, ordersRes] = await Promise.all([
+          fetch(`${API_URL}/api/admin/user/number-client`, {
+            method: "GET",
+            credentials: "include",
+          }),
+          fetch(`${API_URL}/api/admin/user/number-order`, {
+            method: "GET",
+            credentials: "include",
+          }),
+          fetch(`${API_URL}/api/admin/user/number-earning`, {
+            method: "GET",
+            credentials: "include",
+          }),
+          fetch(`${API_URL}/api/admin/user/orders`, {
+            method: "GET",
+            credentials: "include",
+          }),
+        ]);
+
+        const [clientData, orderData, earningData, ordersData] =
+          await Promise.all([
+            clientRes.json(),
+            orderRes.json(),
+            earningRes.json(),
+            ordersRes.json(),
+          ]);
+
+        setNumberClient(clientData.numberClient);
+
+        setNumberOrder(orderData.numberOrder);
+        console.log("Number of Orders:", orderData.numberOrder);
+        setNumberEarning(earningData.numberEarning);
+        console.log("Number of Earnings:", earningData.numberEarning);
+        setOrders(ordersData);
         setLoading(false);
-        console.log("Products:", data.length);
-      })
-      .catch((err) => console.error("Lỗi lấy user:", err));
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        setLoading(false);
+      }
+    };
+    fetchDashboardData();
   }, []);
 
-  // Search product
-  useEffect(() => {
-    if (searchProduct) {
-      const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(searchProduct.toLowerCase())
-      );
-      setProducts(filteredProducts);
-    } else {
-      // Nếu không có từ khóa tìm kiếm, lấy lại danh sách sản phẩm gốc
-      fetch(`${import.meta.env.VITE_API_URL}/api/admin/product/products`, {
-        method: "GET",
-        credentials: "include",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setProducts(data);
-          setLoading(false);
-        })
-        .catch((err) => console.error("Lỗi lấy user:", err));
-    }
-  }, [searchProduct, products]);
+  // // Phân trang
+  // const indexOfLastProduct = currentPage * ProductPerPage;
+  // const indexOfFirstProduct = indexOfLastProduct - ProductPerPage;
+  // const currentProducts = products.slice(
+  //   indexOfFirstProduct,
+  //   indexOfLastProduct
+  // );
+  // const totalPages = Math.ceil(products.length / ProductPerPage);
 
-  // Delete product
-  const handleDelete = async (id) => {
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/admin/product/delete-product/${id}`,
-        {
-          method: "DELETE",
-          credentials: "include",
-        }
-      );
-      if (!res.ok) {
-        throw new Error("Failed to delete product");
-      }
-      alert("Product deleted successfully");
-      navigator("/");
-    } catch (err) {
-      console.error("Error when delete product", err);
-    }
-  };
+  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Phân trang
-  const indexOfLastProduct = currentPage * ProductPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - ProductPerPage;
-  const currentProducts = products.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-  const totalPages = Math.ceil(products.length / ProductPerPage);
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const paginateRange = 1;
-  const startPage = Math.max(1, currentPage - Math.floor(paginateRange / 2));
-  const endPage = Math.min(totalPages, startPage + paginateRange - 1);
+  // const paginateRange = 1;
+  // const startPage = Math.max(1, currentPage - Math.floor(paginateRange / 2));
+  // const endPage = Math.min(totalPages, startPage + paginateRange - 1);
   return (
     <div className="dashboard-container-main min-h-screen flex bg-white ">
       <div className="col-span-1 md:col-span-1">
@@ -97,133 +89,96 @@ const DashBoard = () => {
           className="transactions bg-white shadow-md rounded-lg p-7 shadow-md mt-6"
           style={{ width: "100%", height: "75vh" }}
         >
-          <h1 className="text-2xl font-bold mb-4">Product List</h1>
-          <div className="flex justify-between items-center mb-4">
-            <input
-              placeholder="Enter product"
-              value={searchProduct}
-              onChange={(e) => setSearchProduct(e.target.value)}
-              className="border border-gray-300 rounded px-3 py-2 w-1/3"
-              style={{
-                width: "30%",
-                height: "40px",
-                marginBottom: "10px",
-                paddingLeft: "10px",
-              }}
-            ></input>
-          </div>
-          {loading ? (
-            <p className="text-gray-500">Loading products</p>
-          ) : products.length === 0 ? (
-            <p className="text-gray-500">No product found.</p>
-          ) : (
-            <div className="transactions-list overflow-x-auto ">
-              <table className="min-w-full text-sm text-left border">
-                <thead className="bg-gray-200 text-gray-700 text-xl">
-                  <tr>
-                    <th className="py-2 px-3 border">STT</th>
-                    <th className="py-2 px-3 border">ID</th>
-                    <th className="py-2 px-3 border">Name</th>
-                    <th className="py-2 px-3 border">Price</th>
-                    <th className="py-2 px-3 border">Image</th>
-                    <th className="py-2 px-3 border">Category</th>
-                    <th className="py-2 px-3 border">Edit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {currentProducts.map((b, idx) => (
-                    <tr key={b._id} className="border-t">
-                      <td className="py-2 px-3 border">{idx + 1}</td>
-                      <td className="py-2 px-3 border">{b._id}</td>
-                      <td className="py-2 px-3 border">{b.name || "N/A"}</td>
-                      <td className="py-2 px-3 border">{b.price}</td>
-                      <td className="py-2 px-3 border">
-                        {
-                          <img
-                            src={
-                              b.img1 || `http://localhost:5000/${b.image[0]}`
-                            }
-                            alt={b.name}
-                            className="w-10 h-10 object-cover"
-                          />
-                        }
-                      </td>
-                      <td className="py-2 px-3 border">
-                        {b.category || "N/A"}
-                      </td>
-                      <td className="py-2 px-3 border ">
-                        <Link
-                          className="bg-blue-500 text-white rounded"
-                          style={{
-                            padding: "0.5rem 1rem",
-                            marginRight: "0.5rem",
-                          }}
-                          to={`/edit-product/${b._id}`}
-                        >
-                          Update
-                        </Link>
-                        <button
-                          className="bg-red-500 text-white rounded ml-2"
-                          style={{ padding: "0.5rem 1rem" }}
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                "Are you sure you want to delete this product?"
-                              )
-                            ) {
-                              handleDelete(b._id);
-                            }
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="dashboard-page flex justify-center mt-4 space-x-2">
-                <button
-                  onClick={() => paginate(Math.max(currentPage - 1, 1))}
-                  disabled={currentPage === 1}
-                  className={`px-3 py-1 rounded border ${
-                    currentPage === 1
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-white text-blue-500"
-                  }`}
-                >
-                  <i className="fa-solid fa-square-caret-left w-10 "></i>
-                </button>
-                {Array.from({ length: endPage - startPage + 1 }, (_, i) => {
-                  const pageNumber = startPage + i;
-                  <button
-                    key={pageNumber}
-                    onClick={() => paginate(pageNumber)}
-                    className={`px-3 py-1 rounded border w-10 ${
-                      currentPage === pageNumber
-                        ? "bg-blue-500 text-white"
-                        : "bg-white text-blue-500"
-                    }`}
-                  >
-                    {pageNumber}
-                  </button>;
-                })}
-                <button
-                  onClick={() =>
-                    paginate(Math.min(currentPage + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                  className={`px-3 py-1 rounded border w-10 ${
-                    currentPage === totalPages
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-white text-blue-500"
-                  }`}
-                >
-                  <i className="fa-solid fa-square-caret-right"></i>
-                </button>
+          <div className="dashboard-header mb-6">
+            <h1 className="text-2xl font-bold">Dashboard</h1>
+
+            <div className="dashboard-stats grid grid-cols-3 gap-20 mt-4 ">
+              <div className="stat-item bg-gray-100 p-4 rounded shadow">
+                <div>
+                  <p className="text-2xl font-bold">{numberClient}</p>
+                  <h2 className="text-xl font-semibold">Clients</h2>
+                </div>
+                <div>
+                  <i className="fa-solid fa-user-plus"></i>
+                </div>
+              </div>
+              <div className="stat-item bg-gray-100 p-4 rounded shadow">
+                <div>
+                  <p className="text-2xl font-bold">{numberEarning} VND</p>
+                  <h2 className="text-xl font-semibold">Earnings of Month</h2>
+                </div>
+                <div>
+                  <i className="fa-solid fa-dollar-sign"></i>
+                </div>
+              </div>
+              <div className="stat-item bg-gray-100 p-4 rounded shadow">
+                <div>
+                  <p className="text-2xl font-bold">{numberOrder}</p>
+
+                  <h2 className="text-xl font-semibold">New Orders</h2>
+                </div>
+                <div>
+                  <i className="fa-solid fa-file-circle-plus"></i>
+                </div>
               </div>
             </div>
-          )}
+          </div>
+          <div>
+            {loading ? (
+              <p>Loading</p>
+            ) : orders.length === 0 ? (
+              <div>No Order</div>
+            ) : (
+              <div>
+                {orders.map((order) => (
+                  <div key={order._id} className="order-item ">
+                    <table className="table-content w-full border-collapse">
+                      <thead>
+                        <tr className="bg-gray-100">
+                          <th className="font-bold">ID User</th>
+                          <th className="font-bold">Name</th>
+                          <th className="font-bold">Phone</th>
+                          <th className="font-bold">Address</th>
+                          <th className="font-bold">Total</th>
+                          <th className="font-bold">Delivery</th>
+                          <th className="font-bold">Status</th>
+                          <th className="font-bold">Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="hover:bg-gray-50 text-center">
+                          <td>{order.userId}</td>
+                          <td>{order.customer.name}</td>
+                          <td>{order.customer.phone}</td>
+                          <td>{order.customer.address}</td>
+                          <td>{order.totalPrice} VND</td>
+                          <td>
+                            {order.delivery
+                              ? "Đã hoàn thành"
+                              : "Chưa hoàn thành"}
+                          </td>
+                          <td>{order.status}</td>
+                          <td>
+                            <Link
+                              to={`/orders/${order._id}`}
+                              className="text-blue-500 hover:underline border border-blue-500"
+                              style={{
+                                padding: "5px 10px",
+                                borderRadius: "5px",
+                                backgroundColor: "#f0f0f0",
+                              }}
+                            >
+                              View Details
+                            </Link>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

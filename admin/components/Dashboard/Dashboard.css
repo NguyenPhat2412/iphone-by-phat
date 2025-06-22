@@ -62,3 +62,37 @@
 .dashboard-navbar-list i {
   padding-left: 220px;
 }
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: #4b5563;
+  padding-top: 20px;
+}
+
+.stat-item div i {
+  font-size: 18px;
+  color: #6b7280;
+  padding-top: 20px;
+}
+
+.dashboard-stats {
+  margin-bottom: 50px;
+}
+
+.table-content thead tr th {
+  padding: 10px 10px;
+}
+
+.table-content tbody tr td {
+  padding: 10px 10px;
+}

@@ -38,7 +38,15 @@ const NavBar = () => {
             to="/new_product"
             className="main-list block py-2 px-3 rounded flex "
           >
-            <i className="fa-solid fa-hotel"></i> <p>New Product</p>
+            <i className="fa-solid fa-hotel"></i>
+            <p>New Product</p>
+          </Link>
+          <Link
+            to="/products"
+            className="main-list block py-2 px-3 rounded flex "
+          >
+            <i className="fa-solid fa-box"></i>
+            <p>Products</p>
           </Link>
         </div>
 

@@ -1,98 +1,88 @@
 import { useState } from "react";
-// import NavBar1 from "../../../components/Navbar/NavBar1";
-import "./login.css";
+import "./Login.css";
 import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const validate = () => {
-    const newErrors = {};
-    if (!username.trim()) newErrors.username = "Username is required";
-    if (!password) newErrors.password = "Password is required";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (!email || !password) {
+      setError("You must fill in all fields!");
+      return false;
+    }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long!");
+      return false;
+    }
+    setError("");
+    return true;
   };
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+    const userData = { email, password };
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/login`,
+        `${import.meta.env.VITE_API_URL}/api/admin/user/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
+          body: JSON.stringify(userData),
+          credentials: "include",
         }
       );
-
       const data = await response.json();
-
-      if (response.ok) {
-        alert("Login successful!");
-        // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem("user", JSON.stringify(data.user));
-        // Lưu token vào localStorage nếu cần
-        localStorage.setItem("token", data.token);
-        // Chuyển sang trang chủ
-        navigate("/");
+      if (data.error) {
+        setError(data.error);
       } else {
-        setServerError(data.message || "Login failed");
+        alert("Đăng nhập thành công!");
+
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        navigate("/");
+        window.location.reload();
       }
     } catch (error) {
-      console.error("Login error:", error);
-      setServerError("Server error. Please try again later.");
+      console.error("Error:", error);
+      setError("Đã xảy ra lỗi, vui lòng thử lại sau.");
     }
   };
 
   return (
-    <>
-      <div className="login-container">
-        <form className="login-form" onSubmit={handleSubmit}>
-          <h1>Login</h1>
-
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="Enter your name"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            {errors.username && (
-              <p className="text-red-500 text-sm">{errors.username}</p>
-            )}
-          </div>
-
-          <div className="form-group">
-            <input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password}</p>
-            )}
-          </div>
-
-          {serverError && (
-            <p className="text-red-500 text-sm mb-2">{serverError}</p>
-          )}
-          <div>
-            <button type="submit">Login</button>
-            <Link to="/register" className="text-blue-500 text-sm mt-2">
-              {`Don't have an account? Register here`}
+    <div className="login-container">
+      <div className="login-wrapper">
+        <div className="login-box">
+          <h1 className="login-title">Sign In</h1>
+          <input
+            type="email"
+            placeholder="Email"
+            className="login-input"
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="login-input"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {error && <p className="login-error">{error}</p>}
+          <button className="login-button" onClick={handleLogin}>
+            SIGN IN
+          </button>
+          <div className="login-footer">
+            Create an account?{" "}
+            <Link to="/register" className="login-link">
+              Sign Up
             </Link>
           </div>
-        </form>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

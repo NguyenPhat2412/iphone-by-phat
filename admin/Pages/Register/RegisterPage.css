@@ -1,32 +1,34 @@
-.login-container {
+.register-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  background-image: url("/ShopIphoneByReactJs/img/banner1.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
-.login-wrapper {
+.register-wrapper {
   width: 100%;
   max-width: 500px;
   padding: 20px;
 }
 
-.login-box {
+.register-box {
   background-color: #ffffff;
   border-radius: 8px;
   padding: 40px 30px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.login-title {
+.register-title {
   text-align: center;
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 30px;
 }
 
-.login-input {
+.register-input {
   width: 100%;
   padding: 14px;
   margin-bottom: 15px;
@@ -35,7 +37,7 @@
   font-size: 16px;
 }
 
-.login-button {
+.register-button {
   width: 100%;
   padding: 14px;
   background-color: #333;
@@ -45,31 +47,32 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
-.login-button:hover {
-  background-color: #0066cc;
+.register-button:hover {
+  background-color: #007bff;
 }
 
-.login-error {
+.register-error {
   color: red;
   font-size: 14px;
   margin-bottom: 10px;
   text-align: center;
 }
 
-.login-footer {
+.register-footer {
   text-align: center;
   margin-top: 30px;
-  color: #666;
+  color: #444;
 }
 
-.login-link {
+.register-link {
   color: #00cccc;
   margin-left: 5px;
   text-decoration: none;
 }
 
-.login-link:hover {
+.register-link:hover {
   text-decoration: underline;
 }

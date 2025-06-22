@@ -5,13 +5,7 @@ import "../components/Dashboard/Dashboard.css";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
-  const [user, setUser] = useState(null);
-  const [bookings, setBookings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [numberUser, setNumberUser] = useState(0);
-  const [numberOrders, setNumberOrders] = useState(0);
-  const [numberEarnings, setNumberEarnings] = useState(0);
-  const [numberBalance, setNumberBalance] = useState(0);
 
   const bookingsPerPage = 6;
 
@@ -24,47 +18,29 @@ const Users = () => {
       .then((res) => res.json())
       .then((data) => {
         setUsers(data);
-        setUser(...data);
       })
       .catch((err) => console.error("Lỗi lấy user:", err));
   }, []);
 
   // Lấy số lượng người dùng
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/user/users")
+    fetch("http://localhost:5000/api/admin/user/users", {
+      method: "GET",
+      credentials: "include",
+    })
       .then((res) => res.json())
-      .then((data) => setNumberUser(data.length))
       .catch((err) => console.error("Lỗi lấy số lượng người dùng:", err));
   }, []);
 
-  // Lấy booking khi đã có user
-  useEffect(() => {
-    if (!user?._id) return;
-    fetch(`http://localhost:5000/api/booking/user?userId=${user._id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log("Bookings:", data);
-        setBookings(data);
-        setNumberOrders(data.length);
-        const totalEarnings = data.reduce(
-          (acc, booking) => acc + booking.totalPrice,
-          0
-        );
-        setNumberEarnings(totalEarnings);
-        const totalBalance = data.reduce(
-          (acc, booking) => acc + booking.totalPrice,
-          0
-        );
-        setNumberBalance(totalBalance);
-      })
-      .catch((err) => console.error("Lỗi lấy bookings:", err));
-  }, [user]);
-
   // Delete user theo id
   const handleDeleteUser = async (id) => {
-    const response = await fetch(`http://localhost:5000/api/user/${id}`, {
-      method: "DELETE",
-    });
+    const response = await fetch(
+      `http://localhost:5000/api/admin/user/users/${id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
     if (response.ok) {
       setUsers(users.filter((user) => user._id !== id));
       alert("User deleted successfully!");
@@ -102,7 +78,7 @@ const Users = () => {
                 <thead className="bg-gray-200 text-gray-700 text-xl">
                   <tr>
                     <th className="py-4 px-6 border">STT</th>
-                    <th className="py-4 px-6 border">User</th>
+
                     <th className="py-4 px-6 border">ID</th>
                     <th className="py-4 px-6 border">User Name</th>
                     <th className="py-4 px-6 border">Password</th>
@@ -118,11 +94,9 @@ const Users = () => {
                       <td className="py-2 px-3 border">
                         {(currentPage - 1) * bookingsPerPage + idx + 1}
                       </td>
-                      <td className="py-2 px-3 border">{b.username}</td>
+
                       <td className="py-2 px-3 border">{b._id}</td>
-                      <td className="py-2 px-3 border">
-                        {b.fullName || "N/A"}
-                      </td>
+                      <td className="py-2 px-3 border">{b.name || "N/A"}</td>
                       <td className="py-2 px-3 border">{b.password}</td>
                       <td className="py-2 px-3 border">
                         {b.fullName || "N/A"}

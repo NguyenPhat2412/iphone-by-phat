@@ -4,36 +4,31 @@ import { Link, useNavigate } from "react-router-dom";
 
 const SignUpPage = () => {
   const [name, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
   const navigate = useNavigate();
 
   const handleSignUp = () => {
-    if (!email || !password || !name || !phone) {
-      setError("Vui lòng nhập đầy đủ thông tin!");
+    if (!email || !password || !name) {
+      setError("You must fill in all fields!");
       return;
     }
     if (password.length < 8) {
-      setError("Mật khẩu phải có ít nhất 8 ký tự!");
+      setError("Password must be at least 8 characters long!");
       return;
     }
 
     const userData = {
       name: name,
-      phone,
       email,
       password,
     };
 
-    // Post user data to the server
-    fetch(`${import.meta.env.VITE_API_URL}/api/client/user/register`, {
+    fetch(`${import.meta.env.VITE_API_URL}/api/admin/user/register`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(userData),
     })
       .then((response) => response.json())
@@ -52,52 +47,38 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="container-register">
-      <div className="flex items-center justify-center min-h-165">
-        <div className="w-120 p-10 bg-white rounded-lg ">
-          <h1 className="text-2xl font-bold text-center py-12 mb-4">Sign Up</h1>
+    <div className="register-container">
+      <div className="register-wrapper">
+        <div className="register-box">
+          <h1 className="register-title">Sign Up</h1>
           <input
             placeholder="Full Name"
             type="text"
-            className="w-full p-5 border border-gray-300 rounded mb-3"
+            className="register-input"
             value={name}
             onChange={(e) => setFullName(e.target.value)}
           />
           <input
             type="email"
             placeholder="Email"
-            className="w-full p-5 border border-gray-300 rounded mb-3"
+            className="register-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
             type="password"
             placeholder="Password"
-            className="w-full p-5 border border-gray-300 rounded mb-3"
+            className="register-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <input
-            type="text"
-            placeholder="Phone"
-            className="w-full p-5 border border-gray-300 rounded mb-3"
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-          <button
-            className="w-full bg-gray-800 text-white p-5 rounded hover:bg-blue-600"
-            style={{ marginTop: "10px" }}
-            onClick={handleSignUp}
-          >
+          {error && <p className="register-error">{error}</p>}
+          <button className="register-button" onClick={handleSignUp}>
             Sign Up
           </button>
-          <div className="text-center mt-3 pt-6">
-            Login?
-            <Link
-              to="/login"
-              className="text-blue-500 px-1"
-              style={{ color: "#00CCCC" }}
-            >
+          <div className="register-footer">
+            Login?{" "}
+            <Link to="/login" className="register-link">
               Click
             </Link>
           </div>
