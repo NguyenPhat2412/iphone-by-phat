@@ -12,4 +12,7 @@ export default defineConfig({
     port: 3000,
   },
   base: "/ShopIphoneByReactJs/",
+  build: {
+    outDir: "dist", // bắt buộc là dist nếu bạn không đổi
+  },
 });
