@@ -43,6 +43,7 @@ app.use(cookieParser());
 const clientUser = require("./routes/Client/User");
 const clientProduct = require("./routes/Client/Product");
 const clientOrder = require("./routes/Client/Order");
+const clientCart = require("./routes/Client/Cart");
 
 // Admin
 const adminUser = require("./routes/Admin/User");
@@ -52,7 +53,7 @@ const adminUpload = require("./routes/Admin/Upload");
 app.use("/api/client/user", clientUser);
 app.use("/api/client/product", clientProduct);
 app.use("/api/client/order", clientOrder);
-
+app.use("/api/client/cart", clientCart);
 // Admin Routes
 app.use("/api/admin/user", adminUser);
 app.use("/api/admin/product", adminProduct);

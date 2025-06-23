@@ -10,9 +10,12 @@ const DetailPage = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
+
   const handleAddToCart = () => {
     // alert(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
     dispatch(ADD_CART({ ...product, quantity: 1 }));
+    // Cập nhật cart trên server
+
     // Thêm logic cập nhật giỏ hàng tại đây
   };
 

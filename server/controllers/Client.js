@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
+const Cart = require("../models/Cart");
 const Footer = require("../models/Footer");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -20,6 +21,7 @@ exports.postUser = async (req, res) => {
   }
   // Check if user already exists
   const existingUser = await User.findOne({ email });
+
   if (existingUser) {
     return res.status(400).json({ error: "User already exists" });
   }
@@ -247,4 +249,51 @@ exports.getAllFooter = async (req, res) => {
       console.error("Error fetching footer data:", err);
       res.status(500).json({ error: "Internal server error" });
     });
+};
+
+// Post cart
+exports.postCart = async (req, res) => {
+  const { img1, name, price, quantity, productId } = req.body;
+  const userId = req.params.userId;
+
+  const newCart = new Cart({
+    userId,
+    img1,
+    name,
+    price,
+    quantity,
+    productId,
+  });
+  try {
+    const savedCart = await newCart.save();
+    res.status(201).json(savedCart);
+  } catch (err) {
+    console.error("Error saving cart:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Get cart by userId
+exports.getCartByUserId = async (req, res) => {
+  const userId = req.params.userId;
+  console.log("Fetching cart for userId:", userId);
+
+  // Validate userId
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  try {
+    const cartItems = await Cart.find({ userId: userId });
+    console.log("Cart items found:", cartItems);
+    if (!cartItems || cartItems.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No cart items found for this user" });
+    }
+    res.status(200).json(cartItems);
+  } catch (err) {
+    console.error("Error fetching cart items:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };

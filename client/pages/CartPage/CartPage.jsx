@@ -11,6 +11,8 @@ const CartPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const userId = JSON.parse(localStorage.getItem("currentUser"))?.id;
+
   const handleQuantityChange = (id, quantity) => {
     if (quantity < 1) return;
     dispatch(UPDATE_CART({ id, quantity }));
@@ -65,6 +67,25 @@ const CartPage = () => {
       navigate("/login");
     }
   };
+
+  // Get cart from userId
+  useEffect(() => {
+    const fetchCart = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/client/cart/cart/${userId}`,
+          { credentials: "include" }
+        );
+        const data = await response.json();
+        if (data.cart) {
+          dispatch({ type: "cart/SET_CART", payload: data.cart });
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
+      }
+    };
+    fetchCart();
+  }, [dispatch]);
 
   return (
     <div
