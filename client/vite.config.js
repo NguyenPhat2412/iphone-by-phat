@@ -13,6 +13,6 @@ export default defineConfig({
   },
   base: "/ShopIphoneByReactJs/",
   build: {
-    outDir: "dist", // bắt buộc là dist nếu bạn không đổi
+    outDir: "dist",
   },
 });

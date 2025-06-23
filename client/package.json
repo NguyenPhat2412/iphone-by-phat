@@ -1,17 +1,16 @@
 {
-  "name": "base-react-vite-hoidanit",
+  "name": "Phatdev2412's Shop Iphone by ReactJS",
   "author": {
-    "name": "Hỏi Dân IT & Eric",
-    "url": "https://hoidanit.vn"
+    "name": "Phatdev2412",
+    "url": "No"
   },
-  "homepage": "https://nguyenphat2412.github.io/ShopIphoneByReactJs/",
   "private": false,
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npx vite",
     "start": "vite",
-    "build": "vite build",
+    "build": "npx vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
