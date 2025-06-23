@@ -3,7 +3,7 @@ import "./App.css";
 import DashBoard from "../components/Dashboard/Dashboard";
 import Users from "../Pages/Users";
 import SignUpPage from "../Pages/Register/RegisterPage";
-import LoginPage from "../Pages/Login/Login";
+import LoginPage from "../Pages/Login/LoginPage";
 import NewProduct from "../Pages/NewProduct";
 import EditProduct from "../Pages/EditProduct";
 import AdminPanel from "../Pages/Admin";
