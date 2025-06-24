@@ -67,6 +67,7 @@ const LiveChat = ({ isOpen }) => {
       socket.off("chat_ended", handleChatEnded);
       socket.off("connect_error", (err) => {
         console.error("❌ Socket connect error:", err.message);
+        console.log(err.message);
       });
     };
   }, []);
