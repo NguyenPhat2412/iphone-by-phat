@@ -53,6 +53,9 @@ const LiveChat = ({ isOpen }) => {
       localStorage.removeItem("rooms");
       setRoomId(null);
     };
+    socket.on("connect_error", (err) => {
+      console.error("❌ Socket connect error:", err.message);
+    });
 
     socket.on("room_created", handleRoomCreated);
     socket.on("new_message", handleNewMessage);
@@ -62,6 +65,9 @@ const LiveChat = ({ isOpen }) => {
       socket.off("room_created", handleRoomCreated);
       socket.off("new_message", handleNewMessage);
       socket.off("chat_ended", handleChatEnded);
+      socket.off("connect_error", (err) => {
+        console.error("❌ Socket connect error:", err.message);
+      });
     };
   }, []);
 
