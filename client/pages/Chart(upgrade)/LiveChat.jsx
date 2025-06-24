@@ -4,11 +4,6 @@ import { io } from "socket.io-client";
 
 const socket = io(import.meta.env.VITE_API_URL, {
   transports: ["websocket"],
-  reconnectionAttempts: 5,
-  reconnectionDelay: 1000,
-  reconnectionDelayMax: 5000,
-  timeout: 20000,
-  autoConnect: true,
   withCredentials: true,
 }); // Adjust the URL as needed
 
@@ -37,6 +32,7 @@ const LiveChat = ({ isOpen }) => {
 
   useEffect(() => {
     console.log("Connect to socket: ", socket.connected);
+    console.log(socket.id);
     const handleRoomCreated = ({ roomId }) => {
       localStorage.setItem("rooms", roomId);
       setRoomId(roomId);
