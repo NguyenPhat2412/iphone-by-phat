@@ -297,3 +297,5 @@ exports.getCartByUserId = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Phiên làm việc của người dùng
