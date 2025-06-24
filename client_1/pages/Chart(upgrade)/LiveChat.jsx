@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { io } from "socket.io-client";
 
-const socket = io(import.meta.env.VITE_API_URL); // Adjust the URL as needed
+const socket = io(import.meta.env.VITE_API_URL, {
+  transports: ["websocket"],
+  withCredentials: true,
+}); // Adjust the URL as needed
 
 const LiveChat = ({ isOpen }) => {
   // Local storage key for rooms
