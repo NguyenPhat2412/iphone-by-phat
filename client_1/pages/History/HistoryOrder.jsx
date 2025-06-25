@@ -113,12 +113,12 @@ const HistoryOrder = () => {
                     </td>
                     <td className=" px-2 py-2">{order.status}</td>
                     <td className=" px-2 py-2">
-                      <a
+                      <link
                         href={`/order/view-orders/${order._id}`}
                         className="text-blue-500 hover:underline border border-blue-500 px-2 py-1"
                       >
                         View <i className="fa-solid fa-arrow-right"></i>
-                      </a>
+                      </link>
                     </td>
                   </tr>
                 ))}
