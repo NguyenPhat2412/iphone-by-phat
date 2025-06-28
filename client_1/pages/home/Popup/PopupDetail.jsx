@@ -5,12 +5,10 @@ import { useNavigate } from "react-router-dom";
 const PopupDetail = () => {
   const dispatch = useDispatch();
   const { isOpen, product } = useSelector((state) => state.popup);
-
-  // Lấy id sản phẩm từ state
-  const productId = useSelector((state) => state.popup._id);
   const navigate = useNavigate();
   // in ra thông tin sản phẩm
   console.log("Popup product:", product);
+  console.log("Popup: ", product?._id);
 
   if (!isOpen || !product) return null;
 
@@ -51,7 +49,7 @@ const PopupDetail = () => {
             <button
               className="bg-black text-white px-4 py-2 rounded-md mt-6"
               onClick={() => {
-                navigate(`/detail/${productId}`);
+                navigate(`/detail/${product._id}`);
                 dispatch(HIDE_POPUP());
               }}
             >
