@@ -7,8 +7,10 @@ const PopupDetail = () => {
   const { isOpen, product } = useSelector((state) => state.popup);
 
   // Lấy id sản phẩm từ state
-  const productId = useSelector((state) => state.popup.productId);
+  const productId = useSelector((state) => state.popup._id);
   const navigate = useNavigate();
+  // in ra thông tin sản phẩm
+  console.log("Popup product:", product);
 
   if (!isOpen || !product) return null;
 
