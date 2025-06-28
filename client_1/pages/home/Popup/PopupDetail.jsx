@@ -1,9 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { HIDE_POPUP } from "../Redux/popupSlice";
+import { useNavigate } from "react-router-dom";
 
 const PopupDetail = () => {
   const dispatch = useDispatch();
   const { isOpen, product } = useSelector((state) => state.popup);
+
+  // Lấy id sản phẩm từ state
+  const productId = useSelector((state) => state.popup.productId);
+  const navigate = useNavigate();
 
   if (!isOpen || !product) return null;
 
@@ -41,7 +46,13 @@ const PopupDetail = () => {
               {product.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")} đ
             </p>
             <p className="text-gray-600 mt-2 pr-10">{product.short_desc}</p>
-            <button className="bg-black text-white px-4 py-2 rounded-md mt-6">
+            <button
+              className="bg-black text-white px-4 py-2 rounded-md mt-6"
+              onClick={() => {
+                navigate(`/detail/${productId}`);
+                dispatch(HIDE_POPUP());
+              }}
+            >
               View Detail
             </button>
           </div>
