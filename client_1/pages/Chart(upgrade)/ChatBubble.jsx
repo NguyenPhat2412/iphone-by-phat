@@ -8,6 +8,7 @@ const ChatBubble = ({ toggleChat, isOpen }) => {
         "❌"
       ) : (
         <div className="text-4xl">
+          {" "}
           <i className="fa-brands fa-facebook-messenger"></i>
         </div>
       )}

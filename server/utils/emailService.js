@@ -16,7 +16,6 @@ const sendOrderConfirmationEmail = async (
   cart,
   orderDate
 ) => {
-  console.log(cart);
   const productList = cart
     .map((item) => {
       `- ${item.name} (Quantity: ${item.quantity}, Price: $${item.price})`;

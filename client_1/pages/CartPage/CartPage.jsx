@@ -146,15 +146,6 @@ const CartPage = () => {
                 ))}
               </tbody>
             </table>
-
-            <div className="flex justify-between mt-5 bg-gray-100 py-5 px-2">
-              <button onClick={() => navigate("/shop")} className="px-4 py-2">
-                Continue Shopping
-              </button>
-              <button onClick={handleProceed} className="border  px-4 py-2">
-                Proceed to Checkout
-              </button>
-            </div>
           </div>
           <div className="w-1/3 bg-gray-100 p-7 rounded-lg shadow-md">
             <h2 className="text-3xl p-5">CART TOTAL</h2>

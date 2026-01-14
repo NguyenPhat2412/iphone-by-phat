@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 
 const LiveChat = ({ isOpen }) => {
   // Local storage key for rooms
-  const [roomId, setRoomId] = useState(localStorage.getItem("rooms") || "");
+  const [roomId, setRoomId] = useState(localStorage.getItem("roomId") || "");
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
 
@@ -32,8 +32,9 @@ const LiveChat = ({ isOpen }) => {
 
   useEffect(() => {
     console.log("Connect to socket: ", socket.connected);
-    const handleRoomCreated = ({ roomId }) => {
-      localStorage.setItem("rooms", roomId);
+    const handleRoomCreated = (roomId) => {
+      console.log("Room created from backend:", roomId);
+      localStorage.setItem("roomId", roomId);
       setRoomId(roomId);
     };
 
@@ -45,7 +46,7 @@ const LiveChat = ({ isOpen }) => {
     const handleChatEnded = () => {
       alert("Chat has ended. You can start a new chat.");
       setMessages([]);
-      localStorage.removeItem("rooms");
+      localStorage.removeItem("roomId");
       setRoomId(null);
     };
 
