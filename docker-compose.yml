@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  # Backend Node.js
+  iphone-server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    restart: always
+
+  # Frontend dành cho khách (Port 3000)
+  iphone-client:
+    build: ./client_1
+    ports:
+      - "3000:80" # Ánh xạ cổng 3000 của Windows vào cổng 80 của Nginx
+    restart: always
+
+  # Frontend dành cho quản trị (Port 3001)
+  iphone-admin:
+    build: ./admin
+    ports:
+      - "3001:80"
+    restart: always

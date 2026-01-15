@@ -1,7 +1,0 @@
-@import "tailwindcss";
-@import "@fortawesome/fontawesome-free/css/all.min.css";
-
-body {
-  font-style: italic;
-  background: white;
-}
